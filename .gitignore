@@ -1,0 +1,10 @@
+__pycache__/
+.DS_Store
+backtest_results
+hyperopt_results
+data
+hyperopt.lock
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+logs
