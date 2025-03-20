@@ -25,15 +25,7 @@ class bbands(IStrategy):
     bbPeriodSell = IntParameter(low=8, high=32, default=27, space="sell")
     stDevSell = DecimalParameter(low=1.0, high=5.0, default=3.712, space="sell")
     
-    lvrg = IntParameter(low=2, high=20, default=10, space="roi")
-    
-    plot_config = {
-        "main_plot": {
-            "bb_lower_buy": {"color": "green", "plotly": {"opacity": 0.7}},
-            "bb_upper_sell": {"color": "red", "plotly": {"opacity": 0.7}},
-        },
-        "subplots": {},
-    }
+    lvrg = IntParameter(low=2, high=20, default=2, space="roi")
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # generate values for technical analysis indicators

@@ -3,6 +3,7 @@ __pycache__/
 backtest_results
 hyperopt_results
 data
+models
 hyperopt.lock
 *.sqlite
 *.sqlite-shm

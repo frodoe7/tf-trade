@@ -5,8 +5,8 @@ import numpy as np
 class SQNLoss(IHyperOptLoss):
     @staticmethod
     def hyperopt_loss_function(results: pd.DataFrame, trade_count: int, **kwargs) -> float:
-        if trade_count < 3:
-            return 1
+        # if trade_count < 500:
+        #     return 1
 
         risk_per_trade = results["profit_abs"].abs().mean()
         if risk_per_trade == 0:
