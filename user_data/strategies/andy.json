@@ -2,32 +2,32 @@
   "strategy_name": "andy",
   "params": {
     "buy": {
-      "mfi_down_point": 25,
-      "mfi_up_point": 81,
-      "roc_down_point": -4.948,
-      "roc_up_point": 4.163
+      "bop_down_point": -0.671,
+      "bop_up_point": 0.674,
+      "mfi_down_point": 11,
+      "mfi_up_point": 89
     },
     "sell": {},
     "protection": {},
     "roi": {
-      "0": 0.319,
-      "96": 0.047,
-      "433": 0.026,
-      "795": 0
+      "0": 0.23199999999999998,
+      "222": 0.155,
+      "427": 0.061,
+      "489": 0
     },
     "stoploss": {
-      "stoploss": -0.33
+      "stoploss": -0.259
     },
     "trailing": {
       "trailing_stop": true,
-      "trailing_stop_positive": 0.141,
-      "trailing_stop_positive_offset": 0.189,
+      "trailing_stop_positive": 0.147,
+      "trailing_stop_positive_offset": 0.19,
       "trailing_only_offset_is_reached": true
     },
     "max_open_trades": {
-      "max_open_trades": 4
+      "max_open_trades": -1
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-03-20 01:17:28.715274+00:00"
+  "export_time": "2025-03-21 11:03:21.544684+00:00"
 }
