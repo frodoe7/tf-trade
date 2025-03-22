@@ -41,14 +41,6 @@ class andy(IStrategy):
 
     mfi_up_point = IntParameter(low=70, high=90, default=87, space="buy", optimize=True)
 
-    # bop_up_point = DecimalParameter(
-    #     low=0.6, high=0.8, default=0.793, space="buy", optimize=True
-    # )
-
-    # bop_down_point = DecimalParameter(
-    #     low=-0.8, high=-0.6, default=-0.787, space="buy", optimize=True
-    # )
-
     roc_down_point = DecimalParameter(
         low=-5.0, high=-4.0, default=-4.369, space="buy", optimize=True
     )
@@ -64,14 +56,12 @@ class andy(IStrategy):
                 self.pair_stake_data[pair] = {
                     "stake_amount": self.initial_stake_amount.value,
                     "doubling_index": 1,
+                    "trade_directions": []
                 }
 
     def populate_indicators(
         self, dataframe: pd.DataFrame, metadata: dict
     ) -> pd.DataFrame:
-        # dataframe["bop"] = ta.BOP(
-        #     dataframe["open"], dataframe["high"], dataframe["low"], dataframe["close"]
-        # )
         dataframe["roc"] = ta.ROC(dataframe["close"], timeperiod=9)
         dataframe["mfi"] = ta.MFI(
             dataframe["high"],
@@ -150,12 +140,19 @@ class andy(IStrategy):
             if trade.pair == pair and not trade.is_open is False:
                 return False
         
-        # if side == "long":
-        #     if self.buy_sell_index >= self.max_consecutive_direction.value:
-        #         return False
-        # else:
-        #     if self.buy_sell_index <= (-1 * self.max_consecutive_direction.value):
-        #         return False
+        if side == "long":
+            if self.buy_sell_index >= self.max_consecutive_direction.value:
+                return False
+        else:
+            if self.buy_sell_index <= (-1 * self.max_consecutive_direction.value):
+                return False
+            
+        recent_trades = self.pair_stake_data[pair]["trade_directions"][-self.max_consecutive_direction.value:]
+        if len(recent_trades) == self.max_consecutive_direction.value:
+            if all(direction == "long" for direction in recent_trades) and side == "long":
+                return False
+            if all(direction == "short" for direction in recent_trades) and side == "short":
+                return False
 
         return True
 
@@ -171,12 +168,21 @@ class andy(IStrategy):
         current_time,
         **kwargs
     ):
-        # if trade.is_short:
-        #     self.buy_sell_index += 1
-        # else:
-        #     self.buy_sell_index -= 1
+        if pair not in self.pair_stake_data:
+            self.pair_stake_data[pair] = {
+                "stake_amount": self.initial_stake_amount.value,
+                "doubling_index": 1,
+                "trade_directions": []
+            }
 
-        is_win = trade.close_profit is not None and trade.close_profit > 0.0
+        trade_direction = "short" if trade.is_short else "long"
+        self.pair_stake_data[pair]["trade_directions"].append(trade_direction)
+
+        if len(self.pair_stake_data[pair]["trade_directions"]) > self.max_consecutive_direction.value:
+            self.pair_stake_data[pair]["trade_directions"] = self.pair_stake_data[pair]["trade_directions"][-self.max_consecutive_direction.value:]
+            
+        profit = trade.calc_profit(rate=rate, amount=amount)
+        is_win = profit > 0.0
         
         if is_win:
             self.pair_stake_data[pair]["stake_amount"] = self.initial_stake_amount.value
