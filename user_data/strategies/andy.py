@@ -139,14 +139,7 @@ class andy(IStrategy):
         for trade in open_trades:
             if trade.pair == pair and not trade.is_open is False:
                 return False
-        
-        if side == "long":
-            if self.buy_sell_index >= self.max_consecutive_direction.value:
-                return False
-        else:
-            if self.buy_sell_index <= (-1 * self.max_consecutive_direction.value):
-                return False
-            
+
         recent_trades = self.pair_stake_data[pair]["trade_directions"][-self.max_consecutive_direction.value:]
         if len(recent_trades) == self.max_consecutive_direction.value:
             if all(direction == "long" for direction in recent_trades) and side == "long":
@@ -180,10 +173,10 @@ class andy(IStrategy):
 
         if len(self.pair_stake_data[pair]["trade_directions"]) > self.max_consecutive_direction.value:
             self.pair_stake_data[pair]["trade_directions"] = self.pair_stake_data[pair]["trade_directions"][-self.max_consecutive_direction.value:]
-            
+
         profit = trade.calc_profit(rate=rate, amount=amount)
         is_win = profit > 0.0
-        
+
         if is_win:
             self.pair_stake_data[pair]["stake_amount"] = self.initial_stake_amount.value
             self.pair_stake_data[pair]["doubling_index"] = 1
